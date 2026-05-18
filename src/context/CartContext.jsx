@@ -1,8 +1,13 @@
 import {
+
   createContext,
+
   useContext,
+
   useState,
+
   useEffect
+
 } from "react";
 
 const CartContext =
@@ -15,12 +20,15 @@ export function CartProvider({
 }) {
 
   const [cart, setCart] =
+
   useState(() => {
 
     const savedCart =
 
     localStorage.getItem(
+
       "axm-cart"
+
     );
 
     return savedCart
@@ -45,41 +53,50 @@ export function CartProvider({
 
   function addToCart(product){
 
-    setCart((prev) => {
+    const existing =
+    cart.find(
 
-      const existing =
-      prev.find(
+      (item) =>
 
-        (item) =>
+        item.id === product.id
 
-          item.id === product.id
+        &&
+
+        item.size === product.size
+
+    );
+
+    if(existing){
+
+      const updatedCart =
+      cart.map((item) =>
+
+        item.id === product.id
+
+        &&
+
+        item.size === product.size
+
+        ? {
+
+            ...item,
+
+            quantity:
+            item.quantity + 1
+
+          }
+
+        : item
 
       );
 
-      if(existing){
+      setCart(updatedCart);
 
-        return prev.map((item) =>
+    } else {
 
-          item.id === product.id
+      setCart([
 
-            ? {
-
-                ...item,
-
-                quantity:
-                (item.quantity || 1) + 1
-
-              }
-
-            : item
-
-        );
-
-      }
-
-      return [
-
-        ...prev,
+        ...cart,
 
         {
 
@@ -89,15 +106,16 @@ export function CartProvider({
 
         }
 
-      ];
+      ]);
 
-    });
+    }
 
   }
 
   function removeFromCart(index){
 
-    const updated = [...cart];
+    const updated =
+    [...cart];
 
     updated.splice(index,1);
 
@@ -105,55 +123,35 @@ export function CartProvider({
 
   }
 
-  function increaseQuantity(id){
+  function increaseQty(index){
 
-    setCart((prev) =>
+    const updated =
+    [...cart];
 
-      prev.map((item) =>
+    updated[index].quantity += 1;
 
-        item.id === id
-
-          ? {
-
-              ...item,
-
-              quantity:
-              item.quantity + 1
-
-            }
-
-          : item
-
-      )
-
-    );
+    setCart(updated);
 
   }
 
-  function decreaseQuantity(id){
+  function decreaseQty(index){
 
-    setCart((prev) =>
+    const updated =
+    [...cart];
 
-      prev.map((item) =>
+    if(
 
-        item.id === id
+      updated[index]
+      .quantity > 1
 
-          ? {
+    ){
 
-              ...item,
+      updated[index]
+      .quantity -= 1;
 
-              quantity:
-              item.quantity - 1
+      setCart(updated);
 
-            }
-
-          : item
-
-      ).filter(
-        (item) => item.quantity > 0
-      )
-
-    );
+    }
 
   }
 
@@ -175,11 +173,11 @@ export function CartProvider({
 
         removeFromCart,
 
-        clearCart,
+        increaseQty,
 
-        increaseQuantity,
+        decreaseQty,
 
-        decreaseQuantity
+        clearCart
 
       }}
 
