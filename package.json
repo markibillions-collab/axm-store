@@ -16,7 +16,6 @@
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-hot-toast": "^2.6.0",
-    "react-paystack": "^6.0.0",
     "react-router-dom": "^7.15.0",
     "tailwindcss": "^4.2.4"
   },

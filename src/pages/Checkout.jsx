@@ -7,9 +7,6 @@ import {
   motion
 } from "framer-motion";
 
-import {
-  PaystackButton
-} from "react-paystack";
 
 import Navbar from "../components/Navbar";
 
@@ -87,9 +84,7 @@ export default function Checkout() {
 
   }
 
-  const publicKey =
-
-  "pk_test_xxxxxxxxxxxxxxxxx";
+  
 
   const componentProps = {
 
