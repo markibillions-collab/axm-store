@@ -1,20 +1,10 @@
 import {
-  collection,
-  addDoc
-} from "firebase/firestore";
-
-import {
-  motion
-} from "framer-motion";
-
+  useCart
+} from "../context/CartContext";
 
 import Navbar from "../components/Navbar";
 
-import { db } from "../firebase";
-
-import {
-  useCart
-} from "../context/CartContext";
+import toast from "react-hot-toast";
 
 import "../App.css";
 
@@ -26,93 +16,41 @@ export default function Checkout() {
 
     removeFromCart,
 
-    clearCart,
+    increaseQty,
 
-    increaseQuantity,
+    decreaseQty,
 
-    decreaseQuantity
+    clearCart
 
   } = useCart();
 
   const total = cart.reduce(
 
-    (sum,item) =>
+    (sum, item) =>
 
-      sum + (
+      sum +
 
-        Number(item.price)
+      Number(item.price)
 
-        * item.quantity
+      *
 
-      ),
+      item.quantity,
 
     0
 
   );
 
-  async function placeOrder(){
+  function placeOrder(){
 
-    try{
+    toast.success(
+      "Order Placed Successfully"
+    );
 
-      await addDoc(
-
-        collection(db,"orders"),
-
-        {
-
-          items:cart,
-
-          total,
-
-          createdAt:new Date()
-
-        }
-
-      );
-
-      alert(
-        "Payment Successful & Order Placed"
-      );
-
-      clearCart();
-
-    } catch(error){
-
-      alert(error.message);
-
-    }
+    clearCart();
 
   }
 
-  
-
-  const componentProps = {
-
-    email:"customer@email.com",
-
-    amount:total * 100,
-
-    publicKey,
-
-    text:"PAY NOW",
-
-    onSuccess:() => {
-
-      placeOrder();
-
-    },
-
-    onClose:() => {
-
-      alert(
-        "Transaction Cancelled"
-      );
-
-    }
-
-  };
-
-  return(
+  return (
 
     <>
 
@@ -120,134 +58,121 @@ export default function Checkout() {
 
       <div className="checkout-page">
 
-        <motion.div
-          initial={{ opacity:0, y:40 }}
-          animate={{ opacity:1, y:0 }}
-        >
+        <h1>
+          CHECKOUT
+        </h1>
 
-          <p className="checkout-mini">
-            AxM SECURE CHECKOUT
-          </p>
+        {
 
-          <h1>
-            CHECKOUT
-          </h1>
+          cart.length === 0 ? (
 
-        </motion.div>
+            <p className="empty">
 
-        {cart.length === 0 ? (
+              Your cart is empty
 
-          <p className="empty">
-            Your cart is empty
-          </p>
+            </p>
 
-        ) : (
+          ) : (
 
-          <>
+            <>
 
-            <div className="checkout-items">
+              <div className="checkout-items">
 
-              {cart.map((item,index) => (
+                {cart.map((item,index) => (
 
-                <motion.div
-                  className="checkout-card"
-                  key={index}
-                  whileHover={{
-                    scale:1.01
-                  }}
-                >
+                  <div
+                    className="checkout-card"
+                    key={index}
+                  >
 
-                  <img
-                    src={item.image}
-                    alt=""
-                  />
+                    <img
+                      src={item.image}
+                      alt=""
+                    />
 
-                  <div className="checkout-info">
+                    <div>
 
-                    <h3>
-                      {item.name}
-                    </h3>
+                      <h3>
+                        {item.name}
+                      </h3>
 
-                    <p>
-                      ₦{item.price}
-                    </p>
-
-                    {item.size && (
+                      <p>
+                        ₦{item.price}
+                      </p>
 
                       <small>
-                        Size: {item.size}
+                        Size:
+                        {item.size}
                       </small>
 
-                    )}
+                      <div className="qty-row">
 
-                    <div className="quantity-controls">
+                        <button
+                          onClick={() =>
+                            decreaseQty(index)
+                          }
+                        >
+                          -
+                        </button>
 
-                      <button
-                        onClick={() =>
-                          decreaseQuantity(
-                            item.id
-                          )
-                        }
-                      >
-                        -
-                      </button>
+                        <span>
+                          {item.quantity}
+                        </span>
 
-                      <span>
-                        {item.quantity}
-                      </span>
+                        <button
+                          onClick={() =>
+                            increaseQty(index)
+                          }
+                        >
+                          +
+                        </button>
 
-                      <button
-                        onClick={() =>
-                          increaseQuantity(
-                            item.id
-                          )
-                        }
-                      >
-                        +
-                      </button>
+                      </div>
 
                     </div>
 
+                    <button
+                      onClick={() =>
+                        removeFromCart(index)
+                      }
+                    >
+
+                      REMOVE
+
+                    </button>
+
                   </div>
 
-                  <button
-                    onClick={() =>
-                      removeFromCart(index)
-                    }
-                  >
-                    REMOVE
-                  </button>
+                ))}
 
-                </motion.div>
+              </div>
 
-              ))}
+              <div className="checkout-summary">
 
-            </div>
+                <h2>
+                  TOTAL:
+                </h2>
 
-            <motion.div
-              className="checkout-summary"
-              initial={{ opacity:0, y:30 }}
-              animate={{ opacity:1, y:0 }}
-            >
+                <h1>
+                  ₦{total}
+                </h1>
 
-              <h2>
-                TOTAL
-              </h2>
+                <button
+                  className="checkout-btn"
+                  onClick={placeOrder}
+                >
 
-              <h1>
-                ₦{total}
-              </h1>
+                  PLACE ORDER
 
-              <PaystackButton
-                className="checkout-btn"
-                {...componentProps}
-              />
+                </button>
 
-            </motion.div>
+              </div>
 
-          </>
+            </>
 
-        )}
+          )
+
+        }
 
       </div>
 
