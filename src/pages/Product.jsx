@@ -287,6 +287,22 @@ export default function Product() {
 
           </button>
 
+          <a
+
+            href={`https://wa.me/2347067960398?text=Hello%20AxM,%20I%20want%20to%20order%20${product.name}`}
+
+            target="_blank"
+
+            rel="noreferrer"
+
+            className="whatsapp-btn"
+
+          >
+
+            ORDER ON WHATSAPP
+
+          </a>
+
         </motion.div>
 
       </div>

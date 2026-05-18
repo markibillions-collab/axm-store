@@ -2182,3 +2182,24 @@ footer{
     }
 
 }
+/* WHATSAPP BUTTON */
+
+.whatsapp-btn{
+    width:260px;
+    padding:18px;
+    border-radius:50px;
+    background:#25D366;
+    color:white;
+    text-decoration:none;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-top:20px;
+    letter-spacing:3px;
+    font-size:13px;
+    transition:0.3s;
+}
+
+.whatsapp-btn:hover{
+    transform:scale(1.05);
+}
