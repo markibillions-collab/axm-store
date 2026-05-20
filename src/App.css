@@ -1,3 +1,47 @@
+/* GLOBAL RESET */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    background:black;
+
+    color:white;
+
+    font-family:
+    "Montserrat",
+    sans-serif;
+
+    overflow-x:hidden;
+
+    line-height:1.6;
+
+    -webkit-font-smoothing:
+    antialiased;
+
+    text-rendering:
+    optimizeLegibility;
+
+}
+
+/* KEEP LOGO STYLISH */
+
+.logo,
+.hero-logo-text,
+.loading-logo,
+.footer-brand h1{
+
+    font-family:
+    "Times New Roman",
+    serif;
+
+    letter-spacing:4px;
+
+}
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
 
 *{
