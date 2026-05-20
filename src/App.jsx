@@ -678,15 +678,12 @@ export default function App() {
 
         )}
 
-      </AnimatePresence>
+            </AnimatePresence>
 
-      <footer>
-        © 2026 AxM — AETOS x MARKI
-      </footer>
+      <Footer />
 
     </div>
 
   )
 
 }
-<Footer />
