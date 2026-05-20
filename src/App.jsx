@@ -123,6 +123,25 @@ export default function App() {
         toast.success(
           "Account Created"
         );
+        await emailjs.send(
+
+  "service_axm123",
+
+  "template_sati5s7",
+
+  {
+
+    user_email: email,
+
+    message:
+
+    "Welcome to AxM. BUILT ON VISION."
+
+  },
+
+  "xyYW6jKctH5iFwgi2"
+
+);
 
       } else {
 
