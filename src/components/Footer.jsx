@@ -30,7 +30,7 @@ export default function Footer(){
 
         </div>
 
-        {/* LINKS */}
+        {/* QUICK LINKS */}
 
         <div className="footer-links">
 
@@ -54,41 +54,45 @@ export default function Footer(){
             CONTACT
           </Link>
 
+          <Link to="/checkout">
+            CART
+          </Link>
+
         </div>
 
         {/* SOCIALS */}
 
         <div className="footer-socials">
 
-  <h3>
-    CONNECT
-  </h3>
+          <h3>
+            CONNECT
+          </h3>
 
-  <a
-    href="https://www.instagram.com/axm.world?igsh=cjQ0b2VucTBtdGIy&utm_source=qr"
-    target="_blank"
-    rel="noreferrer"
-  >
-    INSTAGRAM
-  </a>
+          <a
+            href="https://www.instagram.com/axm.world?igsh=cjQ0b2VucTBtdGIy&utm_source=qr"
+            target="_blank"
+            rel="noreferrer"
+          >
+            INSTAGRAM
+          </a>
 
-  <a
-    href="https://wa.me/2347067960398"
-    target="_blank"
-    rel="noreferrer"
-  >
-    WHATSAPP
-  </a>
+          <a
+            href="https://wa.me/2347067960398"
+            target="_blank"
+            rel="noreferrer"
+          >
+            WHATSAPP
+          </a>
 
-  <a
-    href="https://www.tiktok.com/@axm0016?_r=1&_t=ZS-96S3XCj8Lav"
-    target="_blank"
-    rel="noreferrer"
-  >
-    TIKTOK
-  </a>
+          <a
+            href="https://www.tiktok.com/@axm0016?_r=1&_t=ZS-96S3XCj8Lav"
+            target="_blank"
+            rel="noreferrer"
+          >
+            TIKTOK
+          </a>
 
-    </div>
+        </div>
 
       </div>
 
