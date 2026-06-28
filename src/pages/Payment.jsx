@@ -232,7 +232,7 @@ Proof of payment attached.`;
 
   <div className="bank-number">
 
-    7067&nbsp;&nbsp;9603&nbsp;&nbsp;98
+    7067960398
 
   </div>
 
