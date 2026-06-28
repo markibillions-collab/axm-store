@@ -1,319 +1,136 @@
-import {
-  Link
-} from "react-router-dom";
+import { useCart } from "../context/CartContext";
+import "./Navbar.css";
+
+import { useState } from "react";
 
 import {
-  useState,
-  useEffect
-} from "react";
-
-import {
-  motion,
-  AnimatePresence
-} from "framer-motion";
-
-import "../App.css";
+  FiMenu,
+  FiX,
+  FiShoppingBag
+} from "react-icons/fi";
 
 export default function Navbar({
 
+  setCartOpen,
   user,
-
   setAuthOpen,
-
   handleLogout
 
 }) {
 
-  const [menuOpen, setMenuOpen] =
-  useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { cart } = useCart();
 
-  const [showNav, setShowNav] =
-  useState(true);
+const cartCount = cart.reduce(
+  (total, item) => total + item.quantity,
+  0
+);
 
-  const [lastScroll, setLastScroll] =
-  useState(0);
-
-  useEffect(() => {
-
-    function handleScroll(){
-
-      if(
-
-        window.scrollY >
-
-        lastScroll
-
-      ){
-
-        setShowNav(false);
-
-      } else {
-
-        setShowNav(true);
-
-      }
-
-      setLastScroll(
-        window.scrollY
-      );
-
-    }
-
-    window.addEventListener(
-      "scroll",
-      handleScroll
-    );
-
-    return () =>
-
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
-
-  }, [lastScroll]);
-
-  return(
+  return (
 
     <>
 
-      {/* ANNOUNCEMENT BAR */}
+      {/* TOP NAV */}
 
-      <div className="announcement-bar">
+      <header className="navbar">
 
-        <div className="announcement-track">
-
-          LIMITED DROP LIVE •
-          BUILT ON VISION •
-          AxM WORLDWIDE •
-          NEW COLLECTION AVAILABLE •
-
-        </div>
-
-      </div>
-
-      {/* NAVBAR */}
-
-      <motion.nav
-
-        className="navbar"
-
-        animate={{
-          y:showNav ? 0 : -120
-        }}
-
-        transition={{
-          duration:0.4
-        }}
-
-      >
-
-        <Link
-          to="/"
-          className="logo"
-        >
-
-          A<span>x</span>M
-
-        </Link>
-
-        {/* DESKTOP */}
-
-        <div className="nav-links">
-
-          <Link to="/">
-            HOME
-          </Link>
-
-          <Link to="/shop">
-            SHOP
-          </Link>
-
-          <Link to="/about">
-            ABOUT
-          </Link>
-
-          <Link to="/contact">
-            CONTACT
-          </Link>
-
-          <Link to="/checkout">
-            CART
-          </Link>
-
-          {
-
-            user ? (
-
-              <button
-                className="nav-btn"
-                onClick={handleLogout}
-              >
-                LOGOUT
-              </button>
-
-            ) : (
-
-              <button
-                className="nav-btn"
-                onClick={() =>
-                  setAuthOpen(true)
-                }
-              >
-                LOGIN
-              </button>
-
-            )
-
-          }
-
-        </div>
-
-        {/* MOBILE BUTTON */}
+        {/* MENU BUTTON */}
 
         <button
-
           className="menu-btn"
-
-          onClick={() =>
-            setMenuOpen(true)
-          }
-
+          onClick={() => setMenuOpen(true)}
         >
-
-          ☰
-
+          <FiMenu />
         </button>
 
-      </motion.nav>
+        {/* CART BUTTON */}
 
-      {/* MOBILE MENU */}
+        {setCartOpen && (
 
-      <AnimatePresence>
+          <button
+  className="cart-icon-btn"
+  onClick={() => setCartOpen(true)}
+>
+  <FiShoppingBag />
 
-        {menuOpen && (
-
-          <motion.div
-
-            className="mobile-menu"
-
-            initial={{
-              opacity:0
-            }}
-
-            animate={{
-              opacity:1
-            }}
-
-            exit={{
-              opacity:0
-            }}
-
-          >
-
-            <button
-
-              className="close-menu"
-
-              onClick={() =>
-                setMenuOpen(false)
-              }
-
-            >
-
-              ✕
-
-            </button>
-
-            <Link
-              to="/"
-              onClick={() =>
-                setMenuOpen(false)
-              }
-            >
-              HOME
-            </Link>
-
-            <Link
-              to="/shop"
-              onClick={() =>
-                setMenuOpen(false)
-              }
-            >
-              SHOP
-            </Link>
-
-            <Link
-              to="/about"
-              onClick={() =>
-                setMenuOpen(false)
-              }
-            >
-              ABOUT
-            </Link>
-
-            <Link
-              to="/contact"
-              onClick={() =>
-                setMenuOpen(false)
-              }
-            >
-              CONTACT
-            </Link>
-
-            <Link
-              to="/checkout"
-              onClick={() =>
-                setMenuOpen(false)
-              }
-            >
-              CART
-            </Link>
-
-            {
-
-              user ? (
-
-                <button
-                  className="mobile-auth-btn"
-                  onClick={() => {
-
-                    handleLogout();
-
-                    setMenuOpen(false);
-
-                  }}
-                >
-                  LOGOUT
-                </button>
-
-              ) : (
-
-                <button
-                  className="mobile-auth-btn"
-                  onClick={() => {
-
-                    setAuthOpen(true);
-
-                    setMenuOpen(false);
-
-                  }}
-                >
-                  LOGIN
-                </button>
-
-              )
-
-            }
-
-          </motion.div>
+  {cartCount > 0 && (
+    <span className="cart-badge">
+      {cartCount}
+    </span>
+  )}
+</button>
 
         )}
 
-      </AnimatePresence>
+      </header>
+
+      {/* LOGIN BUTTON HIDDEN */}
+
+      {false && (
+
+        user ? (
+
+          <button
+            className="auth-btn"
+            onClick={handleLogout}
+          >
+            LOGOUT
+          </button>
+
+        ) : (
+
+          <button
+            className="auth-btn"
+            onClick={() => setAuthOpen(true)}
+          >
+            LOGIN
+          </button>
+
+        )
+
+      )}
+
+      {/* SIDE MENU */}
+
+      <div
+        className={
+          menuOpen
+            ? "side-menu active"
+            : "side-menu"
+        }
+      >
+
+        {/* CLOSE */}
+
+        <button
+          className="close-btn"
+          onClick={() => setMenuOpen(false)}
+        >
+          <FiX />
+        </button>
+
+        {/* LINKS */}
+
+        <a href="/">
+          HOME
+        </a>
+
+        <a href="/shop">
+          SHOP
+        </a>
+
+        <a href="/about">
+          ABOUT
+        </a>
+
+        <a href="/contact">
+          CONTACT
+        </a>
+
+      </div>
 
     </>
 
-  )
+  );
 
 }

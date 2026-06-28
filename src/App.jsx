@@ -1,3 +1,5 @@
+import emailjs from "@emailjs/browser";
+import CartDrawer from "./components/CartDrawer";
 import Footer from "./components/Footer";
 import {
   useCart
@@ -22,8 +24,13 @@ import {
 } from "./firebase";
 
 import {
+
   collection,
-  getDocs
+  getDocs,
+  doc,
+  setDoc,
+  serverTimestamp
+
 } from "firebase/firestore";
 
 import {
@@ -57,6 +64,12 @@ export default function App() {
   const [signup, setSignup] =
   useState(false);
 
+  const [fullName, setFullName] =
+useState("");
+
+const [username, setUsername] =
+useState("");
+
   const [email, setEmail] =
   useState("");
 
@@ -71,6 +84,9 @@ export default function App() {
 
   const [loadingScreen, setLoadingScreen] =
   useState(true);
+  const [cartOpen, setCartOpen] =
+  useState(false);
+
 
   function toggleWishlist(product){
 
@@ -114,15 +130,40 @@ export default function App() {
 
       if(signup){
 
-        await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+  const userCredential =
 
-        toast.success(
-          "Account Created"
-        );
+  await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password
+  );
+
+  await setDoc(
+
+    doc(
+      db,
+      "users",
+      userCredential.user.uid
+     ),
+
+     {
+
+      fullName,
+
+      username,
+
+      email,
+
+      createdAt:
+      serverTimestamp()
+
+     }
+
+     );
+
+     toast.success(
+     "Account Created"
+     );
         await emailjs.send(
 
   "service_axm123",
@@ -289,10 +330,11 @@ export default function App() {
     <div className="app">
 
       <Navbar
-        user={user}
-        setAuthOpen={setAuthOpen}
-        handleLogout={handleLogout}
-      />
+  user={user}
+  setAuthOpen={setAuthOpen}
+  handleLogout={handleLogout}
+  setCartOpen={setCartOpen}
+/>
 
       {/* HERO */}
 
@@ -318,14 +360,11 @@ export default function App() {
 
         >
 
-          <span className="axm-a">A</span>
-          <span className="axm-x">X</span>
-          <span className="axm-m">M</span>
-
+          
         </motion.div>
 
         <p className="hero-sub">
-          AËTOS X MARKI
+          
         </p>
 
         <motion.p
@@ -348,8 +387,8 @@ export default function App() {
 
         >
 
-          BUILT ON VISION.
-          NOT FOR EVERYONE.
+        
+
 
         </motion.p>
 
@@ -365,124 +404,101 @@ export default function App() {
 
         <div className="products">
 
-          {products.slice(0,2).map((product) => (
+  {products.slice(0,2).map((product) => (
 
-            <motion.div
+    <motion.div
 
-              className="card"
+      className="card"
 
-              key={product.id}
+      key={product.id}
 
-              initial={{
-                opacity:0,
-                y:60
-              }}
+    >
 
-              whileInView={{
-                opacity:1,
-                y:0
-              }}
+      <button
 
-              viewport={{
-                once:true
-              }}
+        className="wishlist-btn"
 
-              transition={{
-                duration:0.7
-              }}
+        onClick={() =>
+          toggleWishlist(product)
+        }
 
-              whileHover={{
-                y:-10,
-                scale:1.02
-              }}
+      >
 
-            >
+        {
 
-              <button
+          wishlist.find(
+            (item) =>
+            item.id === product.id
+          )
 
-                className="wishlist-btn"
+          ? "♥"
 
-                onClick={() =>
-                  toggleWishlist(product)
-                }
+          : "♡"
 
-              >
+        }
 
-                {
+      </button>
 
-                  wishlist.find(
-                    (item) =>
-                    item.id === product.id
-                  )
+      <img
+        src={product.image}
+        alt=""
+        onClick={() => {
 
-                  ? "♥"
+          setSelectedProduct(product);
 
-                  : "♡"
+          setSelectedSize("M");
 
-                }
+          setActiveImage(
 
-              </button>
+            product.images?.[0]
 
-              <img
-                src={product.image}
-                alt=""
-                onClick={() => {
+            ||
 
-                  setSelectedProduct(product);
+            product.image
 
-                  setSelectedSize("M");
+          );
 
-                  setActiveImage(
+        }}
+      />
 
-                    product.images?.[0]
+      <div className="card-content">
 
-                    ||
+        <h3>
+          {product.name}
+        </h3>
 
-                    product.image
+        <p className="price">
+          ₦{product.price}
+        </p>
 
-                  );
+        <small className="product-desc">
+          {product.description}
+        </small>
 
-                }}
-              />
+        <button
+          onClick={() => {
 
-              <div className="card-content">
+            addToCart({
+              ...product,
+              size:"M"
+            });
 
-                <h3>
-                  {product.name}
-                </h3>
+            toast.success(
+              "Added To Cart"
+            );
 
-                <p className="price">
-                  ₦{product.price}
-                </p>
+          }}
+        >
+          ADD TO CART
+        </button>
 
-                <small className="product-desc">
-                  {product.description}
-                </small>
+      </div>
 
-                <button
-                  onClick={() => {
+    </motion.div>
 
-                    addToCart({
-                      ...product,
-                      size:"M"
-                    });
+  ))}
 
-                    toast.success(
-                      "Added To Cart"
-                    );
-
-                  }}
-                >
-                  ADD TO CART
-                </button>
-
-              </div>
-
-            </motion.div>
-
-          ))}
-
-        </div>
+</div>
 
       </section>
 
@@ -525,6 +541,31 @@ export default function App() {
                 Access the AxM vision.
               </p>
 
+              {signup && (
+
+  <>
+
+    <input
+      type="text"
+      placeholder="Full Name"
+      value={fullName}
+      onChange={(e) =>
+        setFullName(e.target.value)
+      }
+    />
+
+    <input
+      type="text"
+      placeholder="Username"
+      value={username}
+      onChange={(e) =>
+        setUsername(e.target.value)
+      }
+    />
+
+  </>
+
+)}
               <input
                 type="email"
                 placeholder="Email"
@@ -698,8 +739,15 @@ export default function App() {
         )}
 
             </AnimatePresence>
+     <CartDrawer
 
-      <Footer />
+  cartOpen={cartOpen}
+
+  setCartOpen={setCartOpen}
+
+/>
+
+<Footer />
 
     </div>
 

@@ -1,16 +1,23 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 import Navbar from "../components/Navbar";
+import CartDrawer from "../components/CartDrawer";
 
 import "../App.css";
 
 export default function Contact() {
 
+  const [cartOpen, setCartOpen] =
+  useState(false);
+
   return(
 
     <>
 
-      <Navbar />
+      <Navbar
+        setCartOpen={setCartOpen}
+      />
 
       <div className="contact-page">
 
@@ -83,6 +90,11 @@ export default function Contact() {
         </motion.div>
 
       </div>
+
+      <CartDrawer
+        cartOpen={cartOpen}
+        setCartOpen={setCartOpen}
+      />
 
     </>
 

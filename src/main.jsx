@@ -1,3 +1,8 @@
+import AdminLogin from "./pages/AdminLogin";
+import AdminOrders from "./pages/AdminOrders";
+import Payment from "./pages/Payment";
+import OrderSuccess from "./pages/OrderSuccess";
+
 import React from "react";
 
 import ReactDOM from "react-dom/client";
@@ -99,11 +104,30 @@ ReactDOM.createRoot(
             path="/orders"
             element={<Orders />}
           />
+          <Route path="/admin-login" element={<AdminLogin />} />
 
           <Route
             path="/admin"
             element={<Admin />}
           />
+          <Route
+  path="/payment"
+  element={<Payment />}
+/>
+
+          <Route
+  path="/order-success"
+  element={<OrderSuccess />}
+/>
+
+<Route
+
+path="/admin-orders"
+
+element={<AdminOrders />}
+
+
+/>
 
         </Routes>
 

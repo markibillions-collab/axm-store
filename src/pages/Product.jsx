@@ -1,3 +1,4 @@
+import CartDrawer from "../components/CartDrawer";
 import { useEffect, useState } from "react";
 
 import {
@@ -47,6 +48,8 @@ export default function Product() {
 
   const [activeImage, setActiveImage] =
   useState("");
+  const [cartOpen, setCartOpen] =
+useState(false);
 
   useEffect(() => {
 
@@ -140,7 +143,9 @@ export default function Product() {
 
     <>
 
-      <Navbar />
+      <Navbar
+  setCartOpen={setCartOpen}
+/>
 
       <div className="luxury-product-page">
 
@@ -366,6 +371,11 @@ export default function Product() {
 
       </div>
 
+     <CartDrawer
+     cartOpen={cartOpen}
+     setCartOpen={setCartOpen}
+     />
+     
     </>
 
   )

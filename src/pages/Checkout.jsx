@@ -1,14 +1,33 @@
+import { useNavigate } from "react-router-dom";
+import {
+  collection,
+  addDoc,
+  serverTimestamp
+} from "firebase/firestore";
+
+import { db } from "../firebase";
+
+import {
+  useState
+} from "react";
+
 import {
   useCart
 } from "../context/CartContext";
 
 import Navbar from "../components/Navbar";
+import CartDrawer from "../components/CartDrawer";
 
 import toast from "react-hot-toast";
 
 import "../App.css";
 
 export default function Checkout() {
+  
+  const navigate = useNavigate();
+  
+  const [cartOpen, setCartOpen] =
+  useState(false);
 
   const {
 
@@ -30,31 +49,115 @@ export default function Checkout() {
 
       sum +
 
-      Number(item.price)
-
-      *
+      Number(item.price) *
 
       item.quantity,
 
     0
 
   );
+  const [fullName, setFullName] = useState("");
+const [phone, setPhone] = useState("");
+const [email, setEmail] = useState("");
+const [address, setAddress] = useState("");
+const [state, setState] = useState("");
+const [city, setCity] = useState("");
+const orderNumber = `AXM-${Date.now()}`;
 
-  function placeOrder(){
+ async function placeOrder(){
 
-    toast.success(
-      "Order Placed Successfully"
+  if(
+
+    !fullName ||
+    !phone ||
+    !email ||
+    !state ||
+    !city ||
+    !address
+
+  ){
+
+    toast.error(
+      "Please complete all delivery details."
     );
 
-    clearCart();
+    return;
 
   }
 
-  return (
+  try{
+
+    await addDoc(
+  collection(db, "orders"),
+  {
+    customer: fullName,
+    phone,
+    email,
+    state,
+    city,
+    address,
+    items: cart,
+    total,
+
+    status: "Pending Payment",
+
+    createdAt: serverTimestamp()
+  }
+);
+
+    toast.success(
+      "Proceed to Payment"
+    );
+
+    navigate("/payment", {
+
+  state: {
+
+    orderNumber,
+
+    fullName,
+
+    phone,
+
+    email,
+
+    state,
+
+    city,
+
+    address,
+
+    cart,
+
+    total
+
+  }
+
+});
+
+  }
+
+  catch(error){
+
+    toast.error(
+      "Failed to place order"
+    );
+
+    console.log(error);
+
+  }
+
+ 
+
+}
+
+  return(
 
     <>
 
-      <Navbar />
+      <Navbar
+        setCartOpen={setCartOpen}
+      />
 
       <div className="checkout-page">
 
@@ -101,15 +204,14 @@ export default function Checkout() {
                       </p>
 
                       <small>
-                        Size:
-                        {item.size}
+                        Size: {item.size}
                       </small>
 
                       <div className="qty-row">
 
                         <button
                           onClick={() =>
-                            decreaseQty(index)
+                            decreaseQty(item.id)
                           }
                         >
                           -
@@ -121,7 +223,7 @@ export default function Checkout() {
 
                         <button
                           onClick={() =>
-                            increaseQty(index)
+                            increaseQty(item.id)
                           }
                         >
                           +
@@ -132,8 +234,9 @@ export default function Checkout() {
                     </div>
 
                     <button
+                      className="remove-btn"
                       onClick={() =>
-                        removeFromCart(index)
+                        removeFromCart(item.id)
                       }
                     >
 
@@ -146,6 +249,54 @@ export default function Checkout() {
                 ))}
 
               </div>
+
+              <div className="checkout-form">
+
+  <h2>DELIVERY DETAILS</h2>
+
+  <input
+    type="text"
+    placeholder="Full Name"
+    value={fullName}
+    onChange={(e) => setFullName(e.target.value)}
+  />
+
+  <input
+    type="tel"
+    placeholder="Phone Number"
+    value={phone}
+    onChange={(e) => setPhone(e.target.value)}
+  />
+
+  <input
+    type="email"
+    placeholder="Email Address"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+  />
+
+  <input
+    type="text"
+    placeholder="State"
+    value={state}
+    onChange={(e) => setState(e.target.value)}
+  />
+
+  <input
+    type="text"
+    placeholder="City"
+    value={city}
+    onChange={(e) => setCity(e.target.value)}
+  />
+
+  <textarea
+    placeholder="Full Delivery Address"
+    value={address}
+    onChange={(e) => setAddress(e.target.value)}
+  />
+
+</div>
+
 
               <div className="checkout-summary">
 
@@ -175,6 +326,11 @@ export default function Checkout() {
         }
 
       </div>
+
+      <CartDrawer
+        cartOpen={cartOpen}
+        setCartOpen={setCartOpen}
+      />
 
     </>
 

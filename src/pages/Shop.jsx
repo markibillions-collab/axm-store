@@ -1,3 +1,4 @@
+import CartDrawer from "../components/CartDrawer";
 import { useEffect, useState } from "react";
 
 import {
@@ -30,6 +31,9 @@ export default function Shop() {
 
   const [category, setCategory] =
   useState("All");
+
+  const [cartOpen, setCartOpen] =
+useState(false);
 
   useEffect(() => {
 
@@ -86,7 +90,9 @@ export default function Shop() {
 
     <>
 
-      <Navbar />
+      <Navbar
+  setCartOpen={setCartOpen}
+/>
 
       <div className="shop-page">
 
@@ -147,11 +153,11 @@ export default function Shop() {
             <button
               onClick={() =>
                 setCategory(
-                  "Accessories"
+                  "FULL SET"
                 )
               }
             >
-              ACCESSORIES
+              FULL SET
             </button>
 
           </div>
@@ -208,7 +214,10 @@ export default function Shop() {
         </div>
 
       </div>
-
+<CartDrawer
+  cartOpen={cartOpen}
+  setCartOpen={setCartOpen}
+/>
     </>
 
   );

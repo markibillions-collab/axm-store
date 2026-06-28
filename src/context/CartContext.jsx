@@ -1,11 +1,8 @@
 import {
 
   createContext,
-
   useContext,
-
   useState,
-
   useEffect
 
 } from "react";
@@ -26,9 +23,7 @@ export function CartProvider({
     const savedCart =
 
     localStorage.getItem(
-
       "axm-cart"
-
     );
 
     return savedCart
@@ -51,6 +46,8 @@ export function CartProvider({
 
   }, [cart]);
 
+  /* ADD */
+
   function addToCart(product){
 
     const existing =
@@ -68,16 +65,19 @@ export function CartProvider({
 
     if(existing){
 
-      const updatedCart =
-      cart.map((item) =>
+      setCart(
 
-        item.id === product.id
+        cart.map((item) =>
 
-        &&
+          item.id === product.id
 
-        item.size === product.size
+          &&
 
-        ? {
+          item.size === product.size
+
+          ?
+
+          {
 
             ...item,
 
@@ -86,11 +86,13 @@ export function CartProvider({
 
           }
 
-        : item
+          :
+
+          item
+
+        )
 
       );
-
-      setCart(updatedCart);
 
     } else {
 
@@ -112,48 +114,97 @@ export function CartProvider({
 
   }
 
-  function removeFromCart(index){
+  /* REMOVE */
 
-    const updated =
-    [...cart];
+  function removeFromCart(id){
 
-    updated.splice(index,1);
+    setCart(
 
-    setCart(updated);
+      cart.filter(
 
-  }
+        (item) =>
 
-  function increaseQty(index){
+          item.id !== id
 
-    const updated =
-    [...cart];
+      )
 
-    updated[index].quantity += 1;
-
-    setCart(updated);
+    );
 
   }
 
-  function decreaseQty(index){
+  /* INCREASE */
 
-    const updated =
-    [...cart];
+  function increaseQty(id){
 
-    if(
+    setCart(
 
-      updated[index]
-      .quantity > 1
+      cart.map((item) =>
 
-    ){
+        item.id === id
 
-      updated[index]
-      .quantity -= 1;
+        ?
 
-      setCart(updated);
+        {
 
-    }
+          ...item,
+
+          quantity:
+          item.quantity + 1
+
+        }
+
+        :
+
+        item
+
+      )
+
+    );
 
   }
+
+  /* DECREASE */
+
+  function decreaseQty(id){
+
+    setCart(
+
+      cart
+
+      .map((item) =>
+
+        item.id === id
+
+        ?
+
+        {
+
+          ...item,
+
+          quantity:
+          item.quantity - 1
+
+        }
+
+        :
+
+        item
+
+      )
+
+      .filter(
+
+        (item) =>
+
+          item.quantity > 0
+
+      )
+
+    );
+
+  }
+
+  /* CLEAR */
 
   function clearCart(){
 
@@ -168,6 +219,8 @@ export function CartProvider({
       value={{
 
         cart,
+
+        setCart,
 
         addToCart,
 
@@ -187,7 +240,7 @@ export function CartProvider({
 
     </CartContext.Provider>
 
-  )
+  );
 
 }
 
